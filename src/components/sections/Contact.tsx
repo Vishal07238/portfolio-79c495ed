@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Clock, Github, Linkedin, Send } from "lucide-react";
+import { Mail, MapPin, Clock, Github, Linkedin, Send, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,9 +26,22 @@ const socials = [
   { icon: Mail, href: "mailto:vishalarkalwar2@gmail.com", label: "Email" },
 ];
 
+const colorBg: Record<string, string> = {
+  cyan: "bg-[hsl(var(--cyan)/0.1)]",
+  magenta: "bg-[hsl(var(--magenta)/0.1)]",
+  gold: "bg-[hsl(var(--gold)/0.1)]",
+};
+
+const colorText: Record<string, string> = {
+  cyan: "text-cyan",
+  magenta: "text-magenta",
+  gold: "text-gold",
+};
+
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,31 +99,60 @@ const Contact = () => {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            {contactInfo.map((info) => (
-              <div key={info.label} className="glass rounded-xl p-5 flex items-center gap-4">
-                <div className={`p-3 rounded-lg bg-${info.color}/10`}>
-                  <info.icon size={20} className={`text-${info.color}`} />
+            {contactInfo.map((info, i) => (
+              <motion.div
+                key={info.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ x: 4 }}
+                className="glass rounded-xl p-5 flex items-center gap-4 hover:border-primary/30 transition-all duration-300"
+              >
+                <div className={`p-3 rounded-lg ${colorBg[info.color]}`}>
+                  <info.icon size={20} className={colorText[info.color]} />
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">{info.label}</div>
                   <div className="font-medium">{info.value}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
 
             <div className="flex gap-4 pt-4">
-              {socials.map((s) => (
-                <a
+              {socials.map((s, i) => (
+                <motion.a
                   key={s.label}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
+                  whileHover={{ scale: 1.15, y: -2 }}
                   className="glass rounded-xl p-4 hover:border-primary/40 transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--cyan)/0.15)]"
                 >
                   <s.icon size={20} className="text-muted-foreground hover:text-primary transition-colors" />
-                </a>
+                </motion.a>
               ))}
             </div>
+
+            {/* Resume Download */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="pt-4"
+            >
+              <Button
+                variant="outline"
+                className="border-gold/30 text-gold hover:bg-gold/10 gap-2 w-full"
+              >
+                <Download size={16} />
+                Download Resume
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* Contact Form */}
@@ -119,46 +161,67 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             onSubmit={handleSubmit}
-            className="glass rounded-xl p-8 space-y-5"
+            className="glass rounded-xl p-8 space-y-5 relative overflow-hidden"
           >
-            <Input
-              placeholder="Your Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-              className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20"
+            {/* Animated border glow based on focus */}
+            <motion.div
+              className="absolute inset-0 rounded-xl pointer-events-none"
+              animate={{
+                boxShadow: focused
+                  ? `0 0 30px hsl(var(--${focused === "email" ? "magenta" : focused === "subject" ? "gold" : "cyan"}) / 0.1)`
+                  : "none",
+              }}
+              transition={{ duration: 0.3 }}
             />
-            <Input
-              type="email"
-              placeholder="Your Email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
-              className="bg-secondary/50 border-border focus:border-magenta focus:ring-magenta/20"
-            />
-            <Input
-              placeholder="Subject"
-              value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              required
-              className="bg-secondary/50 border-border focus:border-gold focus:ring-gold/20"
-            />
-            <Textarea
-              placeholder="Your Message"
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              required
-              rows={5}
-              className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20 resize-none"
-            />
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
-            >
-              <Send size={16} />
-              {loading ? "Sending..." : "Send Message"}
-            </Button>
+
+            <div className="relative z-10 space-y-5">
+              <Input
+                placeholder="Your Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onFocus={() => setFocused("name")}
+                onBlur={() => setFocused(null)}
+                required
+                className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20 transition-all duration-300"
+              />
+              <Input
+                type="email"
+                placeholder="Your Email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onFocus={() => setFocused("email")}
+                onBlur={() => setFocused(null)}
+                required
+                className="bg-secondary/50 border-border focus:border-magenta focus:ring-magenta/20 transition-all duration-300"
+              />
+              <Input
+                placeholder="Subject"
+                value={form.subject}
+                onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                onFocus={() => setFocused("subject")}
+                onBlur={() => setFocused(null)}
+                required
+                className="bg-secondary/50 border-border focus:border-gold focus:ring-gold/20 transition-all duration-300"
+              />
+              <Textarea
+                placeholder="Your Message"
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                onFocus={() => setFocused("message")}
+                onBlur={() => setFocused(null)}
+                required
+                rows={5}
+                className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20 resize-none transition-all duration-300"
+              />
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2 group"
+              >
+                <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                {loading ? "Sending..." : "Send Message"}
+              </Button>
+            </div>
           </motion.form>
         </div>
       </div>
