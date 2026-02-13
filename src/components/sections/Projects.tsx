@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Github, ExternalLink } from "lucide-react";
+import { X, Github, ExternalLink, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Project {
@@ -148,27 +148,36 @@ const Projects = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
               onClick={() => setSelected(project)}
-              className="glass rounded-xl p-6 cursor-pointer group hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--cyan)/0.1)]"
+              whileHover={{ y: -4 }}
+              className="glass rounded-xl p-6 cursor-pointer group hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--cyan)/0.1)] relative overflow-hidden"
             >
-              <div className="flex items-start justify-between mb-3">
-                <span className={`text-xs font-mono px-3 py-1 rounded-full border ${badgeColors[project.categoryColor]}`}>
-                  {project.category}
-                </span>
-                <div className="flex gap-2">
+              {/* Hover gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-3">
+                  <span className={`text-xs font-mono px-3 py-1 rounded-full border ${badgeColors[project.categoryColor]}`}>
+                    {project.category}
+                  </span>
+                  <motion.div whileHover={{ rotate: 45 }} className="flex gap-2">
+                    <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                  </motion.div>
+                </div>
+                <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">{project.short}</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((t) => (
+                    <span key={t} className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-3">
                   {project.github && <Github size={14} className="text-muted-foreground" />}
                   {project.live && <ExternalLink size={14} className="text-muted-foreground" />}
                 </div>
-              </div>
-              <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                {project.title}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">{project.short}</p>
-              <div className="flex flex-wrap gap-2">
-                {project.tech.map((t) => (
-                  <span key={t} className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground">
-                    {t}
-                  </span>
-                ))}
               </div>
             </motion.div>
           ))}
@@ -202,15 +211,16 @@ const Projects = () => {
             onClick={() => setSelected(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
               className="glass-strong rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative"
             >
               <button
                 onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-secondary"
               >
                 <X size={20} />
               </button>
@@ -230,9 +240,15 @@ const Projects = () => {
 
               <div className="space-y-4">
                 {selected.details.map((d, i) => (
-                  <p key={i} className="text-sm text-muted-foreground leading-relaxed">
+                  <motion.p
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="text-sm text-muted-foreground leading-relaxed"
+                  >
                     {d}
-                  </p>
+                  </motion.p>
                 ))}
               </div>
 
