@@ -29,7 +29,7 @@ const certifications = [
 ];
 
 const achievements = [
-  "B.Tech AI & ML — Final Year Student with consistent academic performance",
+  "B.Tech AI & ML — 3rd Year Student with consistent academic performance",
   "Built 6+ production-ready projects spanning data analysis, cloud pipelines, and full-stack applications",
   "Designed event-driven pipelines processing real-world e-commerce datasets on AWS",
   "Developed ML model achieving 85%+ accuracy for agricultural price prediction",
