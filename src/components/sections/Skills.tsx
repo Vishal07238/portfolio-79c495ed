@@ -7,7 +7,7 @@ const skillCategories = [
   {
     icon: Database,
     title: "Data Analysis",
-    color: "cyan",
+    color: "electric",
     skills: [
       { name: "Python", level: 90 },
       { name: "SQL", level: 88 },
@@ -20,7 +20,7 @@ const skillCategories = [
   {
     icon: Server,
     title: "Data Engineering",
-    color: "magenta",
+    color: "violet",
     skills: [
       { name: "ETL/ELT", level: 80 },
       { name: "Airflow", level: 72 },
@@ -32,7 +32,7 @@ const skillCategories = [
   {
     icon: Layout,
     title: "Frontend Development",
-    color: "purple",
+    color: "rose",
     skills: [
       { name: "HTML", level: 92 },
       { name: "CSS", level: 88 },
@@ -52,44 +52,41 @@ const skillCategories = [
   },
 ];
 
-const colorClasses: Record<string, { border: string; bg: string; text: string; glow: string; bar: string }> = {
-  cyan: {
-    border: "border-cyan/30 hover:border-cyan/60",
-    bg: "bg-cyan/10",
-    text: "text-cyan",
-    glow: "shadow-[0_0_25px_hsl(var(--cyan)/0.2)]",
-    bar: "bg-gradient-to-r from-cyan to-cyan/60",
+const colorMap: Record<string, { text: string; bg: string; bar: string; glow: string }> = {
+  electric: {
+    text: "text-electric",
+    bg: "bg-[hsl(var(--electric)/0.08)]",
+    bar: "linear-gradient(90deg, hsl(var(--electric)), hsl(var(--electric) / 0.5))",
+    glow: "shadow-[0_0_25px_hsl(var(--electric)/0.15)]",
   },
-  magenta: {
-    border: "border-magenta/30 hover:border-magenta/60",
-    bg: "bg-magenta/10",
-    text: "text-magenta",
-    glow: "shadow-[0_0_25px_hsl(var(--magenta)/0.2)]",
-    bar: "bg-gradient-to-r from-magenta to-magenta/60",
+  violet: {
+    text: "text-violet",
+    bg: "bg-[hsl(var(--violet)/0.08)]",
+    bar: "linear-gradient(90deg, hsl(var(--violet)), hsl(var(--violet) / 0.5))",
+    glow: "shadow-[0_0_25px_hsl(var(--violet)/0.15)]",
   },
-  purple: {
-    border: "border-purple/30 hover:border-purple/60",
-    bg: "bg-purple/10",
-    text: "text-purple",
-    glow: "shadow-[0_0_25px_hsl(var(--purple)/0.2)]",
-    bar: "bg-gradient-to-r from-purple to-purple/60",
+  rose: {
+    text: "text-rose",
+    bg: "bg-[hsl(var(--rose)/0.08)]",
+    bar: "linear-gradient(90deg, hsl(var(--rose)), hsl(var(--rose) / 0.5))",
+    glow: "shadow-[0_0_25px_hsl(var(--rose)/0.15)]",
   },
   gold: {
-    border: "border-gold/30 hover:border-gold/60",
-    bg: "bg-gold/10",
     text: "text-gold",
-    glow: "shadow-[0_0_25px_hsl(var(--gold)/0.2)]",
-    bar: "bg-gradient-to-r from-gold to-gold/60",
+    bg: "bg-[hsl(var(--gold)/0.08)]",
+    bar: "linear-gradient(90deg, hsl(var(--gold)), hsl(var(--gold) / 0.5))",
+    glow: "shadow-[0_0_25px_hsl(var(--gold)/0.15)]",
   },
 };
 
 const AnimatedBar = ({ level, color, delay, animate }: { level: number; color: string; delay: number; animate: boolean }) => (
-  <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+  <div className="h-1.5 w-full rounded-full bg-secondary/60 overflow-hidden">
     <motion.div
-      className={`h-full rounded-full ${colorClasses[color].bar}`}
+      className="h-full rounded-full"
+      style={{ background: colorMap[color].bar }}
       initial={{ width: 0 }}
       animate={animate ? { width: `${level}%` } : { width: 0 }}
-      transition={{ duration: 1, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 1.2, delay, ease: [0.22, 1, 0.36, 1] }}
     />
   </div>
 );
@@ -99,11 +96,7 @@ const Skills = () => {
   const { ref, isVisible } = useScrollReveal(0.2);
 
   return (
-    <section id="skills" className="py-24 relative" ref={ref}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-[hsl(var(--cyan)/0.03)] rounded-full blur-3xl" />
-      </div>
-
+    <section id="skills" className="py-28 relative" ref={ref}>
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -111,16 +104,16 @@ const Skills = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-sm tracking-widest text-cyan uppercase">Technical Arsenal</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3">
+          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Technical Arsenal</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
             Skills &{" "}
             <span className="text-gradient-main">Expertise</span>
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {skillCategories.map((cat, i) => {
-            const c = colorClasses[cat.color];
+            const c = colorMap[cat.color];
             const isOpen = expanded === i;
             return (
               <motion.div
@@ -128,59 +121,56 @@ const Skills = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.08 }}
                 onClick={() => setExpanded(isOpen ? null : i)}
-                className={`glass rounded-xl p-6 cursor-pointer transition-all duration-300 ${c.border} ${
+                className={`glass-premium rounded-xl p-6 cursor-pointer transition-all duration-500 hover:translate-y-[-3px] ${
                   isOpen ? c.glow : ""
-                } hover:scale-[1.02]`}
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <motion.div
-                      whileHover={{ rotate: 10 }}
-                      className={`p-2 rounded-lg ${c.bg}`}
-                    >
-                      <cat.icon size={20} className={c.text} />
-                    </motion.div>
-                    <h3 className="font-display font-semibold text-lg">{cat.title}</h3>
+                    <div className={`p-2.5 rounded-lg ${c.bg}`}>
+                      <cat.icon size={18} className={c.text} />
+                    </div>
+                    <h3 className="font-display font-semibold">{cat.title}</h3>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground font-mono">{cat.skills.length} skills</span>
+                    <span className="text-[11px] text-muted-foreground font-mono">{cat.skills.length} skills</span>
                     <ChevronDown
-                      size={16}
+                      size={14}
                       className={`text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                     />
                   </div>
                 </div>
 
-                {/* Skill preview tags (always visible) */}
-                <div className="flex flex-wrap gap-2 mb-2">
+                {/* Skill preview tags */}
+                <div className="flex flex-wrap gap-2 mb-1">
                   {cat.skills.slice(0, 3).map((skill) => (
-                    <span key={skill.name} className={`px-3 py-1 rounded-full text-xs font-medium ${c.bg} ${c.text} border border-current/20`}>
+                    <span key={skill.name} className={`px-3 py-1 rounded-full text-[11px] font-medium ${c.bg} ${c.text}`}>
                       {skill.name}
                     </span>
                   ))}
                   {cat.skills.length > 3 && !isOpen && (
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-secondary text-muted-foreground">
+                    <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground">
                       +{cat.skills.length - 3} more
                     </span>
                   )}
                 </div>
 
-                {/* Expanded: animated bars */}
+                {/* Expanded bars */}
                 <motion.div
                   initial={false}
                   animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="space-y-3 pt-4 border-t border-border/50 mt-2">
+                  <div className="space-y-3 pt-4 border-t border-border/30 mt-3">
                     {cat.skills.map((skill, si) => (
-                      <div key={skill.name} className="space-y-1">
+                      <div key={skill.name} className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-foreground font-medium">{skill.name}</span>
-                          <span className={`${c.text} font-mono`}>{skill.level}%</span>
+                          <span className="text-foreground/80 font-medium">{skill.name}</span>
+                          <span className={`${c.text} font-mono text-[11px]`}>{skill.level}%</span>
                         </div>
-                        <AnimatedBar level={skill.level} color={cat.color} delay={si * 0.1} animate={isOpen && isVisible} />
+                        <AnimatedBar level={skill.level} color={cat.color} delay={si * 0.08} animate={isOpen && isVisible} />
                       </div>
                     ))}
                   </div>
