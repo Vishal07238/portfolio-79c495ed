@@ -46,35 +46,44 @@ const Navigation = () => {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-        scrolled ? "glass-strong shadow-lg shadow-[hsl(var(--cyan)/0.1)]" : "glass"
-      } rounded-full px-6 py-3 max-w-3xl w-[95%] md:w-auto`}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ${
+        scrolled
+          ? "glass-strong shadow-lg shadow-[hsl(var(--electric)/0.08)]"
+          : "glass"
+      } rounded-2xl px-5 py-2.5 max-w-4xl w-[95%] md:w-auto`}
     >
-      <div className="flex items-center justify-between gap-4">
-        <button onClick={() => handleClick("#home")} className="font-display text-xl font-bold text-gradient-cyan">
-          Dev
+      <div className="flex items-center justify-between gap-6">
+        <button
+          onClick={() => handleClick("#home")}
+          className="font-display text-lg font-bold text-gradient-cyan tracking-tight"
+        >
+          VA.
         </button>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-0.5">
           {navItems.map((item) => (
             <button
               key={item.href}
               onClick={() => handleClick(item.href)}
-              className={`relative text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-200 ${
+              className={`relative text-[13px] font-medium px-3 py-1.5 rounded-lg transition-all duration-300 ${
                 activeSection === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-primary"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {activeSection === item.href && (
                 <motion.span
                   layoutId="activeNav"
-                  className="absolute inset-0 bg-primary/10 rounded-full"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  className="absolute inset-0 rounded-lg"
+                  style={{
+                    background: "linear-gradient(135deg, hsl(var(--electric) / 0.12), hsl(var(--violet) / 0.08))",
+                    border: "1px solid hsl(var(--electric) / 0.15)",
+                  }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
               <span className="relative z-10">{item.label}</span>
@@ -83,42 +92,40 @@ const Navigation = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
           <motion.button
             onClick={toggleTheme}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="relative w-9 h-9 rounded-full flex items-center justify-center bg-primary/10 hover:bg-primary/20 transition-colors"
+            className="relative w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
             aria-label="Toggle theme"
           >
             <AnimatePresence mode="wait">
               {isDark ? (
                 <motion.div
                   key="sun"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <Sun size={16} className="text-gold" />
+                  <Sun size={15} className="text-gold" />
                 </motion.div>
               ) : (
                 <motion.div
                   key="moon"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <Moon size={16} className="text-primary" />
+                  <Moon size={15} className="text-primary" />
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.button>
 
-          {/* Mobile toggle */}
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-foreground">
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-foreground p-1">
+            {isOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
@@ -130,21 +137,25 @@ const Navigation = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden mt-3"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden mt-2"
           >
-            <div className="flex flex-col gap-1 pb-2">
-              {navItems.map((item) => (
-                <button
+            <div className="flex flex-col gap-0.5 pb-2">
+              {navItems.map((item, i) => (
+                <motion.button
                   key={item.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
                   onClick={() => handleClick(item.href)}
                   className={`text-sm px-3 py-2 rounded-lg transition-colors text-left ${
                     activeSection === item.href
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-primary"
+                      ? "text-foreground bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   }`}
                 >
                   {item.label}
-                </button>
+                </motion.button>
               ))}
             </div>
           </motion.div>

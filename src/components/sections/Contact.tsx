@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Clock, Github, Linkedin, Send, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -15,9 +14,9 @@ const contactSchema = z.object({
 });
 
 const contactInfo = [
-  { icon: Mail, label: "Email", value: "vishalarkalwar2@gmail.com", color: "cyan" },
-  { icon: MapPin, label: "Location", value: "Nagpur, Maharashtra", color: "magenta" },
-  { icon: Clock, label: "Response Time", value: "24-48 hours", color: "gold" },
+  { icon: Mail, label: "Email", value: "vishalarkalwar2@gmail.com", color: "electric" },
+  { icon: MapPin, label: "Location", value: "Nagpur, Maharashtra", color: "violet" },
+  { icon: Clock, label: "Response Time", value: "24-48 hours", color: "rose" },
 ];
 
 const socials = [
@@ -26,16 +25,10 @@ const socials = [
   { icon: Mail, href: "mailto:vishalarkalwar2@gmail.com", label: "Email" },
 ];
 
-const colorBg: Record<string, string> = {
-  cyan: "bg-[hsl(var(--cyan)/0.1)]",
-  magenta: "bg-[hsl(var(--magenta)/0.1)]",
-  gold: "bg-[hsl(var(--gold)/0.1)]",
-};
-
-const colorText: Record<string, string> = {
-  cyan: "text-cyan",
-  magenta: "text-magenta",
-  gold: "text-gold",
+const colorMap: Record<string, { bg: string; text: string }> = {
+  electric: { bg: "bg-[hsl(var(--electric)/0.08)]", text: "text-electric" },
+  violet: { bg: "bg-[hsl(var(--violet)/0.08)]", text: "text-violet" },
+  rose: { bg: "bg-[hsl(var(--rose)/0.08)]", text: "text-rose" },
 };
 
 const Contact = () => {
@@ -50,7 +43,6 @@ const Contact = () => {
       toast.error(result.error.errors[0].message);
       return;
     }
-
     setLoading(true);
     try {
       const res = await fetch("https://formspree.io/f/mzdadzee", {
@@ -71,12 +63,12 @@ const Contact = () => {
     }
   };
 
-  return (
-    <section id="contact" className="py-24 relative">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[hsl(var(--magenta)/0.03)] rounded-full blur-3xl" />
-      </div>
+  const focusGlow = focused
+    ? `0 0 40px hsl(var(--${focused === "email" ? "violet" : focused === "subject" ? "rose" : "electric"}) / 0.06)`
+    : "none";
 
+  return (
+    <section id="contact" className="py-28 relative">
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -84,8 +76,8 @@ const Contact = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-sm tracking-widest text-cyan uppercase">Get In Touch</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3">
+          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Get In Touch</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
             Let's{" "}
             <span className="text-gradient-main">Connect</span>
           </h2>
@@ -97,29 +89,32 @@ const Contact = () => {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-6"
+            className="space-y-5"
           >
-            {contactInfo.map((info, i) => (
-              <motion.div
-                key={info.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ x: 4 }}
-                className="glass rounded-xl p-5 flex items-center gap-4 hover:border-primary/30 transition-all duration-300"
-              >
-                <div className={`p-3 rounded-lg ${colorBg[info.color]}`}>
-                  <info.icon size={20} className={colorText[info.color]} />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">{info.label}</div>
-                  <div className="font-medium">{info.value}</div>
-                </div>
-              </motion.div>
-            ))}
+            {contactInfo.map((info, i) => {
+              const c = colorMap[info.color];
+              return (
+                <motion.div
+                  key={info.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  whileHover={{ x: 4 }}
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500"
+                >
+                  <div className={`p-3 rounded-lg ${c.bg}`}>
+                    <info.icon size={18} className={c.text} />
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-muted-foreground uppercase tracking-wider">{info.label}</div>
+                    <div className="font-medium text-sm mt-0.5">{info.value}</div>
+                  </div>
+                </motion.div>
+              );
+            })}
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-3 pt-4">
               {socials.map((s, i) => (
                 <motion.a
                   key={s.label}
@@ -129,29 +124,25 @@ const Contact = () => {
                   initial={{ opacity: 0, scale: 0 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
-                  whileHover={{ scale: 1.15, y: -2 }}
-                  className="glass rounded-xl p-4 hover:border-primary/40 transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--cyan)/0.15)]"
+                  transition={{ delay: 0.3 + i * 0.08, type: "spring" }}
+                  whileHover={{ scale: 1.1, y: -3 }}
+                  className="glass-premium rounded-xl p-4 transition-all duration-500 hover:glow-electric"
                 >
-                  <s.icon size={20} className="text-muted-foreground hover:text-primary transition-colors" />
+                  <s.icon size={18} className="text-muted-foreground" />
                 </motion.a>
               ))}
             </div>
 
-            {/* Resume Download */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="pt-4"
             >
-              <Button
-                variant="outline"
-                className="border-gold/30 text-gold hover:bg-gold/10 gap-2 w-full"
-              >
+              <button className="btn-outline-premium w-full flex items-center justify-center gap-2 text-sm" style={{ borderColor: "hsl(var(--gold) / 0.3)", color: "hsl(var(--gold))" }}>
                 <Download size={16} />
                 Download Resume
-              </Button>
+              </button>
             </motion.div>
           </motion.div>
 
@@ -161,20 +152,10 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             onSubmit={handleSubmit}
-            className="glass rounded-xl p-8 space-y-5 relative overflow-hidden"
+            className="glass-premium rounded-xl p-8 space-y-5 relative overflow-hidden"
+            style={{ boxShadow: focusGlow }}
           >
-            {/* Animated border glow based on focus */}
-            <motion.div
-              className="absolute inset-0 rounded-xl pointer-events-none"
-              animate={{
-                boxShadow: focused
-                  ? `0 0 30px hsl(var(--${focused === "email" ? "magenta" : focused === "subject" ? "gold" : "cyan"}) / 0.1)`
-                  : "none",
-              }}
-              transition={{ duration: 0.3 }}
-            />
-
-            <div className="relative z-10 space-y-5">
+            <div className="space-y-4">
               <Input
                 placeholder="Your Name"
                 value={form.name}
@@ -182,7 +163,7 @@ const Contact = () => {
                 onFocus={() => setFocused("name")}
                 onBlur={() => setFocused(null)}
                 required
-                className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20 transition-all duration-300"
+                className="bg-secondary/30 border-border/50 focus:border-electric/50 transition-all duration-300 h-11"
               />
               <Input
                 type="email"
@@ -192,7 +173,7 @@ const Contact = () => {
                 onFocus={() => setFocused("email")}
                 onBlur={() => setFocused(null)}
                 required
-                className="bg-secondary/50 border-border focus:border-magenta focus:ring-magenta/20 transition-all duration-300"
+                className="bg-secondary/30 border-border/50 focus:border-violet/50 transition-all duration-300 h-11"
               />
               <Input
                 placeholder="Subject"
@@ -201,7 +182,7 @@ const Contact = () => {
                 onFocus={() => setFocused("subject")}
                 onBlur={() => setFocused(null)}
                 required
-                className="bg-secondary/50 border-border focus:border-gold focus:ring-gold/20 transition-all duration-300"
+                className="bg-secondary/30 border-border/50 focus:border-rose/50 transition-all duration-300 h-11"
               />
               <Textarea
                 placeholder="Your Message"
@@ -211,16 +192,16 @@ const Contact = () => {
                 onBlur={() => setFocused(null)}
                 required
                 rows={5}
-                className="bg-secondary/50 border-border focus:border-cyan focus:ring-cyan/20 resize-none transition-all duration-300"
+                className="bg-secondary/30 border-border/50 focus:border-electric/50 resize-none transition-all duration-300"
               />
-              <Button
+              <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2 group"
+                className="btn-premium w-full flex items-center justify-center gap-2 group disabled:opacity-50"
               >
-                <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                 {loading ? "Sending..." : "Send Message"}
-              </Button>
+              </button>
             </div>
           </motion.form>
         </div>

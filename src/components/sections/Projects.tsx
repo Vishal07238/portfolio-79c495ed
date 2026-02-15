@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Github, ExternalLink, ArrowUpRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface Project {
   id: number;
@@ -17,9 +16,7 @@ interface Project {
 
 const projects: Project[] = [
   {
-    id: 1,
-    category: "Data Analysis",
-    categoryColor: "cyan",
+    id: 1, category: "Data Analysis", categoryColor: "electric",
     title: "Customer Behaviour Analysis",
     short: "Customer segmentation and behavior analysis using clustering, SQL, and Power BI.",
     tech: ["Python", "SQL", "Power BI"],
@@ -32,9 +29,7 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 2,
-    category: "Data Analysis",
-    categoryColor: "cyan",
+    id: 2, category: "Data Analysis", categoryColor: "electric",
     title: "Crop Price Prediction - Soybean",
     short: "ML model for predicting soybean crop prices in Maharashtra using historical market data.",
     tech: ["Python", "Machine Learning", "Data Analysis"],
@@ -48,9 +43,7 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 3,
-    category: "Cloud Pipeline",
-    categoryColor: "magenta",
+    id: 3, category: "Cloud Pipeline", categoryColor: "violet",
     title: "Olist AWS Event-Driven Pipeline",
     short: "Event-driven data pipeline on AWS using S3, Lambda, and Glue for the Olist dataset.",
     tech: ["AWS", "S3", "Lambda", "Glue"],
@@ -62,9 +55,7 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 4,
-    category: "Frontend",
-    categoryColor: "purple",
+    id: 4, category: "Frontend", categoryColor: "rose",
     title: "Smart Kisan",
     short: "AI-powered agriculture platform with crop prediction, disease detection, and community features.",
     tech: ["React.js", "Node.js", "Machine Learning"],
@@ -79,9 +70,7 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 5,
-    category: "Frontend",
-    categoryColor: "purple",
+    id: 5, category: "Frontend", categoryColor: "rose",
     title: "Volunteer Management System",
     short: "Real-time event coordination platform with role-based access and skill-based volunteer assignment.",
     tech: ["React.js", "WebSockets", "JWT"],
@@ -97,9 +86,7 @@ const projects: Project[] = [
     ],
   },
   {
-    id: 6,
-    category: "Backend",
-    categoryColor: "gold",
+    id: 6, category: "Backend", categoryColor: "gold",
     title: "Service Backend – Role-Based Task Management",
     short: "Role-based task management backend with JWT auth, PostgreSQL, and REST APIs.",
     tech: ["Node.js", "Express.js", "PostgreSQL"],
@@ -113,18 +100,36 @@ const projects: Project[] = [
   },
 ];
 
-const badgeColors: Record<string, string> = {
-  cyan: "bg-cyan/10 text-cyan border-cyan/20",
-  magenta: "bg-magenta/10 text-magenta border-magenta/20",
-  purple: "bg-purple/10 text-purple border-purple/20",
-  gold: "bg-gold/10 text-gold border-gold/20",
+const accentMap: Record<string, { badge: string; glow: string }> = {
+  electric: {
+    badge: "bg-[hsl(var(--electric)/0.08)] text-electric border-[hsl(var(--electric)/0.15)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--electric)/0.08)]",
+  },
+  violet: {
+    badge: "bg-[hsl(var(--violet)/0.08)] text-violet border-[hsl(var(--violet)/0.15)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--violet)/0.08)]",
+  },
+  rose: {
+    badge: "bg-[hsl(var(--rose)/0.08)] text-rose border-[hsl(var(--rose)/0.15)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--rose)/0.08)]",
+  },
+  gold: {
+    badge: "bg-[hsl(var(--gold)/0.08)] text-gold border-[hsl(var(--gold)/0.15)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--gold)/0.08)]",
+  },
 };
 
 const Projects = () => {
   const [selected, setSelected] = useState<Project | null>(null);
 
+  const handleSpotlight = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+  }, []);
+
   return (
-    <section id="projects" className="py-24 relative">
+    <section id="projects" className="py-28 relative">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -132,107 +137,114 @@ const Projects = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-sm tracking-widest text-cyan uppercase">Portfolio Highlights</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3">
+          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Portfolio Highlights</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
             Featured{" "}
             <span className="text-gradient-main">Projects</span>
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projects.map((project, i) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              onClick={() => setSelected(project)}
-              whileHover={{ y: -4 }}
-              className="glass rounded-xl p-6 cursor-pointer group hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--cyan)/0.1)] relative overflow-hidden"
-            >
-              {/* Hover gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              <div className="relative z-10">
-                <div className="flex items-start justify-between mb-3">
-                  <span className={`text-xs font-mono px-3 py-1 rounded-full border ${badgeColors[project.categoryColor]}`}>
-                    {project.category}
-                  </span>
-                  <motion.div whileHover={{ rotate: 45 }} className="flex gap-2">
-                    <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                  </motion.div>
-                </div>
-                <h3 className="font-display font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">{project.short}</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
-                    <span key={t} className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground">
-                      {t}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {projects.map((project, i) => {
+            const a = accentMap[project.categoryColor];
+            return (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                onClick={() => setSelected(project)}
+                onMouseMove={handleSpotlight}
+                whileHover={{ y: -5 }}
+                className={`spotlight-card glass-premium rounded-xl p-7 cursor-pointer group transition-all duration-500 ${a.glow}`}
+              >
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <span className={`text-[11px] font-mono px-3 py-1 rounded-full border ${a.badge}`}>
+                      {project.category}
                     </span>
-                  ))}
+                    <motion.div whileHover={{ rotate: 45, scale: 1.2 }} transition={{ type: "spring" }}>
+                      <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-electric transition-colors duration-300" />
+                    </motion.div>
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-3 group-hover:text-electric transition-colors duration-300">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{project.short}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <span key={t} className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-3 mt-4 pt-3 border-t border-border/20">
+                    {project.github && <Github size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />}
+                    {project.live && <ExternalLink size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />}
+                  </div>
                 </div>
-                <div className="flex gap-2 mt-3">
-                  {project.github && <Github size={14} className="text-muted-foreground" />}
-                  {project.live && <ExternalLink size={14} className="text-muted-foreground" />}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Visit GitHub banner */}
+        {/* GitHub banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-12 glass rounded-xl p-8 text-center"
+          className="mt-12 glass-premium rounded-xl p-10 text-center"
         >
-          <p className="text-muted-foreground mb-4">More projects coming soon</p>
-          <Button asChild variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 gap-2">
-            <a href="https://github.com/Vishal07238" target="_blank" rel="noopener noreferrer">
-              <Github size={16} />
-              Visit GitHub
-            </a>
-          </Button>
+          <p className="text-muted-foreground mb-5 text-sm">More projects coming soon</p>
+          <a
+            href="https://github.com/Vishal07238"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline-premium inline-flex items-center gap-2 text-sm"
+          >
+            <Github size={16} />
+            Visit GitHub
+          </a>
         </motion.div>
       </div>
 
-      {/* Project Modal */}
+      {/* Modal */}
       <AnimatePresence>
         {selected && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/85 backdrop-blur-md"
             onClick={() => setSelected(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
               className="glass-strong rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative"
+              style={{
+                boxShadow: "0 0 60px hsl(var(--electric) / 0.05), 0 25px 50px -12px rgba(0,0,0,0.4)",
+              }}
             >
               <button
                 onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-secondary"
+                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-secondary/50"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
 
-              <span className={`text-xs font-mono px-3 py-1 rounded-full border ${badgeColors[selected.categoryColor]}`}>
+              <span className={`text-[11px] font-mono px-3 py-1 rounded-full border ${accentMap[selected.categoryColor].badge}`}>
                 {selected.category}
               </span>
-              <h3 className="font-display text-2xl font-bold mt-4 mb-2 text-primary">{selected.title}</h3>
+              <h3 className="font-display text-2xl font-bold mt-4 mb-3 text-gradient-main">{selected.title}</h3>
 
               <div className="flex flex-wrap gap-2 mb-6">
                 {selected.tech.map((t) => (
-                  <span key={t} className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground">
+                  <span key={t} className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground">
                     {t}
                   </span>
                 ))}
@@ -244,7 +256,7 @@ const Projects = () => {
                     key={i}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
+                    transition={{ delay: i * 0.04 }}
                     className="text-sm text-muted-foreground leading-relaxed"
                   >
                     {d}
@@ -252,20 +264,16 @@ const Projects = () => {
                 ))}
               </div>
 
-              <div className="flex gap-3 mt-6 pt-4 border-t border-border">
+              <div className="flex gap-3 mt-6 pt-4 border-t border-border/30">
                 {selected.github && (
-                  <Button asChild size="sm" variant="outline" className="gap-2 border-primary/30 text-primary hover:bg-primary/10">
-                    <a href={selected.github} target="_blank" rel="noopener noreferrer">
-                      <Github size={14} /> GitHub
-                    </a>
-                  </Button>
+                  <a href={selected.github} target="_blank" rel="noopener noreferrer" className="btn-outline-premium text-sm flex items-center gap-2 !px-5 !py-2">
+                    <Github size={14} /> GitHub
+                  </a>
                 )}
                 {selected.live && (
-                  <Button asChild size="sm" className="gap-2 bg-primary text-primary-foreground">
-                    <a href={selected.live} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink size={14} /> Live Demo
-                    </a>
-                  </Button>
+                  <a href={selected.live} target="_blank" rel="noopener noreferrer" className="btn-premium text-sm flex items-center gap-2 !px-5 !py-2">
+                    <ExternalLink size={14} /> Live Demo
+                  </a>
                 )}
               </div>
             </motion.div>
