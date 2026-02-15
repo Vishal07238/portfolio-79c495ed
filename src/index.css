@@ -48,6 +48,50 @@
     --sidebar-border: 220 14% 16%;
     --sidebar-ring: 192 100% 50%;
   }
+
+  .light {
+    --background: 210 20% 96%;
+    --foreground: 220 20% 10%;
+
+    --card: 210 20% 98%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 210 20% 98%;
+    --popover-foreground: 220 20% 10%;
+
+    --primary: 192 100% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 15% 90%;
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 210 12% 92%;
+    --muted-foreground: 215 15% 40%;
+
+    --accent: 338 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 14% 85%;
+    --input: 210 14% 85%;
+    --ring: 192 100% 40%;
+
+    --cyan: 192 100% 40%;
+    --magenta: 338 100% 50%;
+    --gold: 43 72% 45%;
+    --purple: 270 70% 50%;
+
+    --sidebar-background: 210 20% 94%;
+    --sidebar-foreground: 220 20% 10%;
+    --sidebar-primary: 192 100% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 12% 90%;
+    --sidebar-accent-foreground: 220 20% 10%;
+    --sidebar-border: 210 14% 85%;
+    --sidebar-ring: 192 100% 40%;
+  }
 }
 
 @layer base {
@@ -106,6 +150,11 @@
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Theme transition */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease;
 }
 
 /* Custom scrollbar */
