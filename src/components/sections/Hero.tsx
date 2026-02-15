@@ -2,8 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, ExternalLink, MessageSquare, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const PROFILE_IMG = "https://res.cloudinary.com/dchf1b4ci/image/upload/v1770040095/profile.jpg_mpswjd.jpg";
+import profileImg from "@/assets/vishal-profile.jpeg";
 
 const roles = [
   "Full-Stack Developer",
@@ -149,7 +148,7 @@ const Hero = () => {
               <div className="absolute -top-3 -left-3 w-6 h-6 border-t-2 border-l-2 border-cyan rounded-tl-lg" />
               <div className="absolute -bottom-3 -right-3 w-6 h-6 border-b-2 border-r-2 border-magenta rounded-br-lg" />
               <img
-                src={PROFILE_IMG}
+                src={profileImg}
                 alt="Vishal Arkalwar"
                 className="relative rounded-2xl w-72 h-80 lg:w-80 lg:h-96 object-cover"
                 onError={(e) => {
