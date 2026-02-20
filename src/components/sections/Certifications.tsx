@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Award, ExternalLink, Shield, Star } from "lucide-react";
+import { Award, ExternalLink, Shield, Star, Trophy } from "lucide-react";
 
 const certifications = [
   { title: "AWS Cloud Foundations", issuer: "Amazon Web Services", icon: Shield, color: "gold" },
@@ -15,11 +15,11 @@ const achievements = [
   "Developed ML model achieving 85%+ accuracy for agricultural price prediction",
 ];
 
-const colorMap: Record<string, { bg: string; text: string }> = {
-  electric: { bg: "bg-[hsl(var(--electric)/0.08)]", text: "text-electric" },
-  violet: { bg: "bg-[hsl(var(--violet)/0.08)]", text: "text-violet" },
-  rose: { bg: "bg-[hsl(var(--rose)/0.08)]", text: "text-rose" },
-  gold: { bg: "bg-[hsl(var(--gold)/0.08)]", text: "text-gold" },
+const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
+  electric: { bg: "bg-[hsl(var(--electric)/0.08)]", text: "text-electric", glow: "hsl(var(--electric) / 0.15)" },
+  violet: { bg: "bg-[hsl(var(--violet)/0.08)]", text: "text-violet", glow: "hsl(var(--violet) / 0.15)" },
+  rose: { bg: "bg-[hsl(var(--rose)/0.08)]", text: "text-rose", glow: "hsl(var(--rose) / 0.15)" },
+  gold: { bg: "bg-[hsl(var(--gold)/0.08)]", text: "text-gold", glow: "hsl(var(--gold) / 0.15)" },
 };
 
 const Certifications = () => {
@@ -32,11 +32,22 @@ const Certifications = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Recognition</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
+          <motion.div className="flex items-center gap-2 mb-4">
+            <Trophy size={14} className="text-gold" />
+            <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Recognition</span>
+          </motion.div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
             Certifications &{" "}
             <span className="text-gradient-main">Achievements</span>
           </h2>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 60 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="h-0.5 mt-4 rounded-full"
+            style={{ background: "linear-gradient(90deg, hsl(var(--gold)), hsl(var(--electric)))" }}
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -51,15 +62,25 @@ const Certifications = () => {
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, x: -30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  whileHover={{ x: 4, y: -2 }}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-default group"
+                  transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
+                  whileHover={{ x: 6, y: -3, boxShadow: `0 8px 30px ${c.glow}` }}
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-default group relative overflow-hidden"
                 >
+                  {/* Shine effect */}
                   <motion.div
-                    whileHover={{ rotate: 15, scale: 1.1 }}
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: "linear-gradient(105deg, transparent 40%, hsl(var(--foreground) / 0.03) 45%, transparent 50%)",
+                    }}
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "200%" }}
+                    transition={{ duration: 0.6 }}
+                  />
+                  <motion.div
+                    whileHover={{ rotate: 15, scale: 1.15 }}
                     className={`p-3 rounded-lg ${c.bg} flex-shrink-0`}
                   >
                     <cert.icon size={20} className={c.text} />
@@ -70,7 +91,13 @@ const Certifications = () => {
                     </h4>
                     <p className="text-sm text-muted-foreground mt-0.5">{cert.issuer}</p>
                   </div>
-                  <ExternalLink size={13} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    whileHover={{ opacity: 1, x: 0 }}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <ExternalLink size={13} className="text-muted-foreground" />
+                  </motion.div>
                 </motion.div>
               );
             })}
@@ -82,29 +109,43 @@ const Certifications = () => {
               <Star size={18} className="text-gold" />
               Key Achievements
             </h3>
-            <div className="glass-premium rounded-xl p-7 space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="glass-premium rounded-xl p-7 space-y-5"
+            >
               {achievements.map((ach, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 25 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex items-start gap-4 group"
+                  transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
+                  whileHover={{ x: 8 }}
+                  className="flex items-start gap-4 group cursor-default"
                 >
                   <motion.div
-                    whileInView={{ scale: [0, 1.3, 1] }}
+                    whileInView={{ scale: [0, 1.5, 1] }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.08 + 0.15 }}
-                    className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"
+                    transition={{ delay: i * 0.1 + 0.2, type: "spring" }}
+                    className="w-2 h-2 rounded-full mt-2 flex-shrink-0 relative"
                     style={{ background: "linear-gradient(135deg, hsl(var(--electric)), hsl(var(--violet)))" }}
-                  />
+                  >
+                    {/* Pulse */}
+                    <motion.div
+                      className="absolute inset-0 rounded-full"
+                      style={{ background: "linear-gradient(135deg, hsl(var(--electric)), hsl(var(--violet)))" }}
+                      animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    />
+                  </motion.div>
                   <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground/80 transition-colors duration-300">
                     {ach}
                   </p>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 
 const footerLinks = [
@@ -16,41 +16,72 @@ const Footer = () => {
 
   return (
     <footer className="relative pt-20 pb-10">
-      {/* Gradient divider */}
-      <div className="h-px w-full mb-16" style={{
-        background: "linear-gradient(90deg, transparent, hsl(var(--electric) / 0.3), hsl(var(--violet) / 0.3), hsl(var(--rose) / 0.2), transparent)",
-      }} />
+      {/* Animated gradient divider */}
+      <motion.div
+        className="h-px w-full mb-16"
+        style={{
+          background: "linear-gradient(90deg, transparent, hsl(var(--electric) / 0.4), hsl(var(--violet) / 0.4), hsl(var(--rose) / 0.3), transparent)",
+          backgroundSize: "200% 100%",
+        }}
+        animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+      />
 
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand */}
-          <div className="space-y-4">
-            <div className="font-display text-xl font-bold text-gradient-cyan tracking-tight">VA.</div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-4"
+          >
+            <motion.div
+              className="font-display text-xl font-bold text-gradient-cyan tracking-tight inline-block"
+              whileHover={{ scale: 1.1 }}
+            >
+              VA.
+            </motion.div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Full-stack AI engineer & data professional building end-to-end solutions that bridge data and impact.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Navigation */}
-          <div>
+          {/* Navigation with staggered reveal */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+          >
             <h4 className="font-mono text-[11px] font-medium mb-5 uppercase tracking-[0.2em] text-muted-foreground">
               Navigation
             </h4>
             <div className="flex flex-col gap-2.5">
               {footerLinks.map((link) => (
-                <button
+                <motion.button
                   key={link.href}
+                  variants={{
+                    hidden: { opacity: 0, x: -15 },
+                    visible: { opacity: 1, x: 0 },
+                  }}
                   onClick={() => scrollTo(link.href)}
+                  whileHover={{ x: 6, color: "hsl(var(--electric))" }}
                   className="text-sm text-muted-foreground hover:text-electric transition-colors duration-300 text-left"
                 >
                   {link.label}
-                </button>
+                </motion.button>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Connect */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+          >
             <h4 className="font-mono text-[11px] font-medium mb-5 uppercase tracking-[0.2em] text-muted-foreground">
               Connect
             </h4>
@@ -74,21 +105,39 @@ const Footer = () => {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ y: -3, scale: 1.1 }}
+                  whileHover={{ y: -4, scale: 1.15, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
                   className="w-9 h-9 rounded-lg flex items-center justify-center bg-secondary/40 hover:bg-[hsl(var(--electric)/0.1)] transition-colors duration-300"
                 >
                   <s.icon size={15} className="text-muted-foreground" />
                 </motion.a>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="mt-14 pt-6 text-center" style={{ borderTop: "1px solid hsl(var(--border) / 0.5)" }}>
-          <p className="text-[11px] text-muted-foreground tracking-wider">
-            © {new Date().getFullYear()} Vishal Arkalwar. Crafted with precision.
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-14 pt-6 text-center"
+          style={{ borderTop: "1px solid hsl(var(--border) / 0.5)" }}
+        >
+          <p className="text-[11px] text-muted-foreground tracking-wider flex items-center justify-center gap-1.5">
+            © {new Date().getFullYear()} Vishal Arkalwar. Crafted with
+            <motion.span
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <Heart size={10} className="text-rose fill-current" />
+            </motion.span>
+            and precision.
           </p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

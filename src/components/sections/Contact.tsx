@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Clock, Github, Linkedin, Send, Download } from "lucide-react";
+import { Mail, MapPin, Clock, Github, Linkedin, Send, Download, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -64,7 +64,7 @@ const Contact = () => {
   };
 
   const focusGlow = focused
-    ? `0 0 40px hsl(var(--${focused === "email" ? "violet" : focused === "subject" ? "rose" : "electric"}) / 0.06)`
+    ? `0 0 40px hsl(var(--${focused === "email" ? "violet" : focused === "subject" ? "rose" : "electric"}) / 0.08)`
     : "none";
 
   return (
@@ -76,11 +76,22 @@ const Contact = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Get In Touch</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
+          <motion.div className="flex items-center gap-2 mb-4">
+            <MessageCircle size={14} className="text-electric" />
+            <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Get In Touch</span>
+          </motion.div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
             Let's{" "}
             <span className="text-gradient-main">Connect</span>
           </h2>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 60 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="h-0.5 mt-4 rounded-full"
+            style={{ background: "linear-gradient(90deg, hsl(var(--electric)), hsl(var(--violet)))" }}
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -99,16 +110,19 @@ const Contact = () => {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  whileHover={{ x: 4 }}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500"
+                  transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
+                  whileHover={{ x: 6, y: -2 }}
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 group"
                 >
-                  <div className={`p-3 rounded-lg ${c.bg}`}>
+                  <motion.div
+                    className={`p-3 rounded-lg ${c.bg}`}
+                    whileHover={{ rotate: 15, scale: 1.1 }}
+                  >
                     <info.icon size={18} className={c.text} />
-                  </div>
+                  </motion.div>
                   <div>
                     <div className="text-[11px] text-muted-foreground uppercase tracking-wider">{info.label}</div>
-                    <div className="font-medium text-sm mt-0.5">{info.value}</div>
+                    <div className="font-medium text-sm mt-0.5 group-hover:text-electric transition-colors">{info.value}</div>
                   </div>
                 </motion.div>
               );
@@ -124,8 +138,9 @@ const Contact = () => {
                   initial={{ opacity: 0, scale: 0 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.08, type: "spring" }}
-                  whileHover={{ scale: 1.1, y: -3 }}
+                  transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
+                  whileHover={{ scale: 1.15, y: -4, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
                   className="glass-premium rounded-xl p-4 transition-all duration-500 hover:glow-electric"
                 >
                   <s.icon size={18} className="text-muted-foreground" />
@@ -139,10 +154,15 @@ const Contact = () => {
               viewport={{ once: true }}
               className="pt-4"
             >
-              <button className="btn-outline-premium w-full flex items-center justify-center gap-2 text-sm" style={{ borderColor: "hsl(var(--gold) / 0.3)", color: "hsl(var(--gold))" }}>
+              <motion.button
+                className="btn-outline-premium w-full flex items-center justify-center gap-2 text-sm"
+                style={{ borderColor: "hsl(var(--gold) / 0.3)", color: "hsl(var(--gold))" }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
                 <Download size={16} />
                 Download Resume
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -153,8 +173,19 @@ const Contact = () => {
             viewport={{ once: true }}
             onSubmit={handleSubmit}
             className="glass-premium rounded-xl p-8 space-y-5 relative overflow-hidden"
-            style={{ boxShadow: focusGlow }}
+            style={{ boxShadow: focusGlow, transition: "box-shadow 0.5s ease" }}
           >
+            {/* Animated border glow when focused */}
+            <motion.div
+              className="absolute inset-0 rounded-xl pointer-events-none"
+              animate={{
+                boxShadow: focused
+                  ? `inset 0 0 0 1px hsl(var(--electric) / 0.2)`
+                  : `inset 0 0 0 1px transparent`,
+              }}
+              transition={{ duration: 0.3 }}
+            />
+
             <div className="space-y-4">
               <Input
                 placeholder="Your Name"
@@ -194,14 +225,21 @@ const Contact = () => {
                 rows={5}
                 className="bg-secondary/30 border-border/50 focus:border-electric/50 resize-none transition-all duration-300"
               />
-              <button
+              <motion.button
                 type="submit"
                 disabled={loading}
                 className="btn-premium w-full flex items-center justify-center gap-2 group disabled:opacity-50"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                <motion.div
+                  animate={loading ? { rotate: 360 } : {}}
+                  transition={{ duration: 1, repeat: loading ? Infinity : 0, ease: "linear" }}
+                >
+                  <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                </motion.div>
                 {loading ? "Sending..." : "Send Message"}
-              </button>
+              </motion.button>
             </div>
           </motion.form>
         </div>

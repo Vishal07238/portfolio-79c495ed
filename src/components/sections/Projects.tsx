@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Github, ExternalLink, ArrowUpRight } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { X, Github, ExternalLink, ArrowUpRight, Layers } from "lucide-react";
 
 interface Project {
   id: number;
@@ -100,23 +100,66 @@ const projects: Project[] = [
   },
 ];
 
-const accentMap: Record<string, { badge: string; glow: string }> = {
+const accentMap: Record<string, { badge: string; glow: string; border: string }> = {
   electric: {
     badge: "bg-[hsl(var(--electric)/0.08)] text-electric border-[hsl(var(--electric)/0.15)]",
-    glow: "hover:shadow-[0_8px_40px_hsl(var(--electric)/0.08)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--electric)/0.1)]",
+    border: "hsl(var(--electric) / 0.25)",
   },
   violet: {
     badge: "bg-[hsl(var(--violet)/0.08)] text-violet border-[hsl(var(--violet)/0.15)]",
-    glow: "hover:shadow-[0_8px_40px_hsl(var(--violet)/0.08)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--violet)/0.1)]",
+    border: "hsl(var(--violet) / 0.25)",
   },
   rose: {
     badge: "bg-[hsl(var(--rose)/0.08)] text-rose border-[hsl(var(--rose)/0.15)]",
-    glow: "hover:shadow-[0_8px_40px_hsl(var(--rose)/0.08)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--rose)/0.1)]",
+    border: "hsl(var(--rose) / 0.25)",
   },
   gold: {
     badge: "bg-[hsl(var(--gold)/0.08)] text-gold border-[hsl(var(--gold)/0.15)]",
-    glow: "hover:shadow-[0_8px_40px_hsl(var(--gold)/0.08)]",
+    glow: "hover:shadow-[0_8px_40px_hsl(var(--gold)/0.1)]",
+    border: "hsl(var(--gold) / 0.25)",
   },
+};
+
+// 3D tilt project card
+const TiltCard = ({ children, className, onMouseMove, onClick }: {
+  children: React.ReactNode;
+  className?: string;
+  onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: () => void;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 200, damping: 20 });
+  const springY = useSpring(y, { stiffness: 200, damping: 20 });
+  const rotateX = useTransform(springY, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-5, 5]);
+
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
+    onMouseMove?.(e);
+  };
+
+  const handleLeave = () => { x.set(0); y.set(0); };
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleLeave}
+      onClick={onClick}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 const Projects = () => {
@@ -137,34 +180,53 @@ const Projects = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Portfolio Highlights</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-4 tracking-tight">
+          <motion.div className="flex items-center gap-2 mb-4">
+            <Layers size={14} className="text-electric" />
+            <span className="font-mono text-xs tracking-[0.25em] text-electric uppercase">Portfolio Highlights</span>
+          </motion.div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
             Featured{" "}
             <span className="text-gradient-main">Projects</span>
           </h2>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 60 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="h-0.5 mt-4 rounded-full"
+            style={{ background: "linear-gradient(90deg, hsl(var(--electric)), hsl(var(--violet)))" }}
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {projects.map((project, i) => {
             const a = accentMap[project.categoryColor];
             return (
-              <motion.div
+              <TiltCard
                 key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
                 onClick={() => setSelected(project)}
                 onMouseMove={handleSpotlight}
-                whileHover={{ y: -5 }}
                 className={`spotlight-card glass-premium rounded-xl p-7 cursor-pointer group transition-all duration-500 ${a.glow}`}
               >
-                <div className="relative z-10">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="relative z-10"
+                  style={{ transform: "translateZ(10px)" }}
+                >
                   <div className="flex items-start justify-between mb-4">
-                    <span className={`text-[11px] font-mono px-3 py-1 rounded-full border ${a.badge}`}>
+                    <motion.span
+                      className={`text-[11px] font-mono px-3 py-1 rounded-full border ${a.badge}`}
+                      whileHover={{ scale: 1.1 }}
+                    >
                       {project.category}
-                    </span>
-                    <motion.div whileHover={{ rotate: 45, scale: 1.2 }} transition={{ type: "spring" }}>
+                    </motion.span>
+                    <motion.div
+                      whileHover={{ rotate: 45, scale: 1.3 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
                       <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-electric transition-colors duration-300" />
                     </motion.div>
                   </div>
@@ -173,18 +235,33 @@ const Projects = () => {
                   </h3>
                   <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{project.short}</p>
                   <div className="flex flex-wrap gap-2">
-                    {project.tech.map((t) => (
-                      <span key={t} className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground">
+                    {project.tech.map((t, ti) => (
+                      <motion.span
+                        key={t}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.06 + ti * 0.05 }}
+                        className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground"
+                      >
                         {t}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
                   <div className="flex gap-3 mt-4 pt-3 border-t border-border/20">
-                    {project.github && <Github size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />}
-                    {project.live && <ExternalLink size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />}
+                    {project.github && (
+                      <motion.div whileHover={{ scale: 1.2 }}>
+                        <Github size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                      </motion.div>
+                    )}
+                    {project.live && (
+                      <motion.div whileHover={{ scale: 1.2 }}>
+                        <ExternalLink size={14} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                      </motion.div>
+                    )}
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </TiltCard>
             );
           })}
         </div>
@@ -197,15 +274,17 @@ const Projects = () => {
           className="mt-12 glass-premium rounded-xl p-10 text-center"
         >
           <p className="text-muted-foreground mb-5 text-sm">More projects coming soon</p>
-          <a
+          <motion.a
             href="https://github.com/Vishal07238"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-outline-premium inline-flex items-center gap-2 text-sm"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             <Github size={16} />
             Visit GitHub
-          </a>
+          </motion.a>
         </motion.div>
       </div>
 
@@ -220,22 +299,22 @@ const Projects = () => {
             onClick={() => setSelected(null)}
           >
             <motion.div
-              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              initial={{ scale: 0.88, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.92, opacity: 0, y: 20 }}
+              exit={{ scale: 0.88, opacity: 0, y: 30 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
               className="glass-strong rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto relative"
-              style={{
-                boxShadow: "0 0 60px hsl(var(--electric) / 0.05), 0 25px 50px -12px rgba(0,0,0,0.4)",
-              }}
+              style={{ boxShadow: "0 0 60px hsl(var(--electric) / 0.05), 0 25px 50px -12px rgba(0,0,0,0.4)" }}
             >
-              <button
+              <motion.button
                 onClick={() => setSelected(null)}
                 className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-secondary/50"
+                whileHover={{ rotate: 90, scale: 1.1 }}
+                transition={{ duration: 0.2 }}
               >
                 <X size={18} />
-              </button>
+              </motion.button>
 
               <span className={`text-[11px] font-mono px-3 py-1 rounded-full border ${accentMap[selected.categoryColor].badge}`}>
                 {selected.category}
@@ -243,10 +322,16 @@ const Projects = () => {
               <h3 className="font-display text-2xl font-bold mt-4 mb-3 text-gradient-main">{selected.title}</h3>
 
               <div className="flex flex-wrap gap-2 mb-6">
-                {selected.tech.map((t) => (
-                  <span key={t} className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground">
+                {selected.tech.map((t, i) => (
+                  <motion.span
+                    key={t}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="text-[11px] px-2.5 py-1 rounded-md bg-secondary/50 text-muted-foreground"
+                  >
                     {t}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
 
@@ -254,9 +339,9 @@ const Projects = () => {
                 {selected.details.map((d, i) => (
                   <motion.p
                     key={i}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.04 }}
+                    transition={{ delay: i * 0.06 }}
                     className="text-sm text-muted-foreground leading-relaxed"
                   >
                     {d}
@@ -266,14 +351,22 @@ const Projects = () => {
 
               <div className="flex gap-3 mt-6 pt-4 border-t border-border/30">
                 {selected.github && (
-                  <a href={selected.github} target="_blank" rel="noopener noreferrer" className="btn-outline-premium text-sm flex items-center gap-2 !px-5 !py-2">
+                  <motion.a
+                    href={selected.github} target="_blank" rel="noopener noreferrer"
+                    className="btn-outline-premium text-sm flex items-center gap-2 !px-5 !py-2"
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <Github size={14} /> GitHub
-                  </a>
+                  </motion.a>
                 )}
                 {selected.live && (
-                  <a href={selected.live} target="_blank" rel="noopener noreferrer" className="btn-premium text-sm flex items-center gap-2 !px-5 !py-2">
+                  <motion.a
+                    href={selected.live} target="_blank" rel="noopener noreferrer"
+                    className="btn-premium text-sm flex items-center gap-2 !px-5 !py-2"
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <ExternalLink size={14} /> Live Demo
-                  </a>
+                  </motion.a>
                 )}
               </div>
             </motion.div>
