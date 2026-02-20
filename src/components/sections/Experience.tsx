@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Briefcase, Calendar, MapPin, ChevronRight } from "lucide-react";
 
 const experiences = [
   {
@@ -7,8 +7,7 @@ const experiences = [
     company: "AWS Academy Graduate – Data Engineering",
     period: "January 2026",
     location: "Online",
-    description:
-      "Completed AWS Academy Data Engineering training focused on cloud-based data pipelines and big data processing.",
+    description: "Completed AWS Academy Data Engineering training focused on cloud-based data pipelines and big data processing.",
     highlights: [
       "Designed ETL pipelines using AWS services",
       "Worked with Amazon S3, AWS Glue, and AWS Lambda",
@@ -23,8 +22,7 @@ const experiences = [
     company: "iStudio",
     period: "Feb 2025 – Mar 2025",
     location: "Online",
-    description:
-      "Completed a 1-month Machine Learning Internship focused on building predictive models and real-world ML applications.",
+    description: "Completed a 1-month Machine Learning Internship focused on building predictive models and real-world ML applications.",
     highlights: [
       "Built and trained ML models using Python and Scikit-learn",
       "Performed data preprocessing, feature engineering, and model evaluation",
@@ -36,14 +34,16 @@ const experiences = [
   },
 ];
 
-const accentStyles: Record<string, { dot: string; glow: string }> = {
+const accentStyles: Record<string, { dot: string; glow: string; line: string }> = {
   electric: {
     dot: "border-electric bg-background shadow-[0_0_12px_hsl(var(--electric)/0.5)]",
     glow: "shadow-[0_0_30px_hsl(var(--electric)/0.06)]",
+    line: "hsl(var(--electric) / 0.3)",
   },
   violet: {
     dot: "border-violet bg-background shadow-[0_0_12px_hsl(var(--violet)/0.5)]",
     glow: "shadow-[0_0_30px_hsl(var(--violet)/0.06)]",
+    line: "hsl(var(--violet) / 0.3)",
   },
 };
 
@@ -62,6 +62,14 @@ const Experience = () => {
             Experience &{" "}
             <span className="text-gradient-main">Internships</span>
           </h2>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 60 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="h-0.5 mt-4 rounded-full"
+            style={{ background: "linear-gradient(90deg, hsl(var(--electric)), hsl(var(--violet)))" }}
+          />
         </motion.div>
 
         <div className="relative">
@@ -70,15 +78,16 @@ const Experience = () => {
             <div className="h-full w-full" style={{
               background: "linear-gradient(to bottom, hsl(var(--electric) / 0.5), hsl(var(--violet) / 0.5), hsl(var(--rose) / 0.3))",
             }} />
+            {/* Animated light tracer */}
             <motion.div
-              className="absolute top-0 left-0 w-full"
+              className="absolute left-0 w-full"
               style={{
-                height: "60px",
-                background: "linear-gradient(to bottom, hsl(var(--electric) / 0.8), transparent)",
+                height: "80px",
+                background: "linear-gradient(to bottom, transparent, hsl(var(--electric) / 0.8), transparent)",
                 filter: "blur(3px)",
               }}
-              animate={{ top: ["0%", "90%", "0%"] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ top: ["-10%", "110%"] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }}
             />
           </div>
 
@@ -88,45 +97,67 @@ const Experience = () => {
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -30 }}
+                  initial={{ opacity: 0, x: -40 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className="relative pl-12 md:pl-16"
                 >
-                  {/* Timeline dot */}
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 + 0.1, type: "spring", stiffness: 200 }}
-                    className={`absolute left-[18px] md:left-[30px] -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 ${s.dot} z-10`}
-                  />
+                  {/* Timeline dot with pulse ring */}
+                  <div className="absolute left-[18px] md:left-[30px] -translate-x-1/2 z-10">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.2 + 0.1, type: "spring", stiffness: 200 }}
+                      className={`w-3.5 h-3.5 rounded-full border-2 ${s.dot} relative`}
+                    >
+                      {/* Pulse ring */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2"
+                        style={{ borderColor: s.line }}
+                        animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+                      />
+                    </motion.div>
+                  </div>
 
                   <motion.div
-                    whileHover={{ y: -3 }}
+                    whileHover={{ y: -4, x: 4 }}
                     transition={{ type: "spring", stiffness: 300 }}
-                    className={`glass-premium rounded-xl p-7 transition-all duration-500 group hover:${s.glow}`}
+                    className={`glass-premium rounded-xl p-7 transition-all duration-500 group`}
                   >
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-4">
                       <div>
-                        <h3 className="font-display text-lg font-bold text-foreground group-hover:text-electric transition-colors duration-300">
+                        <motion.h3
+                          className="font-display text-lg font-bold text-foreground group-hover:text-electric transition-colors duration-300"
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.2 + 0.2 }}
+                        >
                           {exp.role}
-                        </h3>
+                        </motion.h3>
                         <div className="flex items-center gap-2 text-muted-foreground text-sm mt-1.5">
                           <Briefcase size={13} className="text-violet" />
                           <span>{exp.company}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 text-[11px] text-muted-foreground font-mono shrink-0">
-                        <div className="flex items-center gap-1.5">
+                        <motion.div
+                          className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-secondary/30"
+                          whileHover={{ scale: 1.05 }}
+                        >
                           <Calendar size={11} className="text-electric" />
                           <span>{exp.period}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
+                        </motion.div>
+                        <motion.div
+                          className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-secondary/30"
+                          whileHover={{ scale: 1.05 }}
+                        >
                           <MapPin size={11} className="text-rose" />
                           <span>{exp.location}</span>
-                        </div>
+                        </motion.div>
                       </div>
                     </div>
 
@@ -136,13 +167,14 @@ const Experience = () => {
                       {exp.highlights.map((h, hi) => (
                         <motion.div
                           key={hi}
-                          initial={{ opacity: 0, x: -10 }}
+                          initial={{ opacity: 0, x: -15 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
-                          transition={{ delay: i * 0.15 + hi * 0.04 }}
-                          className="flex items-start gap-3 text-sm text-muted-foreground group-hover:text-foreground/70 transition-colors"
+                          transition={{ delay: i * 0.15 + hi * 0.06 }}
+                          whileHover={{ x: 6 }}
+                          className="flex items-start gap-3 text-sm text-muted-foreground group-hover:text-foreground/70 transition-colors cursor-default"
                         >
-                          <span className="text-electric mt-1 flex-shrink-0 text-xs">▸</span>
+                          <ChevronRight size={12} className="text-electric mt-1 flex-shrink-0" />
                           <span>{h}</span>
                         </motion.div>
                       ))}
