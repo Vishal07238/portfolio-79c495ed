@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Award, ExternalLink, Shield, Star, Trophy } from "lucide-react";
 
 const certifications = [
-  { title: "AWS Cloud Foundations", issuer: "Amazon Web Services", icon: Shield, color: "gold" },
-  { title: "Python for Data Science", issuer: "IBM / Coursera", icon: Award, color: "electric" },
-  { title: "SQL & Database Management", issuer: "HackerRank", icon: Star, color: "violet" },
-  { title: "Full-Stack Web Development", issuer: "Udemy", icon: Award, color: "rose" },
+  { title: "Fundamentals of Deep Learning", issuer: "NVIDIA", icon: Shield, color: "electric", pdf: "/certificates/fundamentals-deep-learning.pdf" },
+  { title: "AWS Academy Graduate – Data Engineering", issuer: "Amazon Web Services", icon: Shield, color: "gold", pdf: "/certificates/aws-data-engineering.pdf" },
+  { title: "SQL (Basic) Certificate", issuer: "HackerRank", icon: Star, color: "violet", pdf: "/certificates/sql-basic.pdf" },
+  { title: "Machine Learning Internship", issuer: "iStudio", icon: Award, color: "rose", pdf: "/certificates/machine-learning-internship.pdf" },
 ];
 
 const achievements = [
@@ -67,7 +67,8 @@ const Certifications = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
                   whileHover={{ x: 6, y: -3, boxShadow: `0 8px 30px ${c.glow}` }}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-default group relative overflow-hidden"
+                  onClick={() => window.open(cert.pdf, '_blank')}
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden"
                 >
                   {/* Shine effect */}
                   <motion.div
