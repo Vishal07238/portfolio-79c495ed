@@ -60,15 +60,17 @@ const Certifications = () => {
             {certifications.map((cert, i) => {
               const c = colorMap[cert.color];
               return (
-                <motion.div
+                <motion.a
                   key={i}
+                  href={cert.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   initial={{ opacity: 0, x: -30, scale: 0.95 }}
                   whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
                   whileHover={{ x: 6, y: -3, boxShadow: `0 8px 30px ${c.glow}` }}
-                  onClick={() => window.open(cert.pdf, '_blank')}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden"
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden block"
                 >
                   {/* Shine effect */}
                   <motion.div
@@ -92,14 +94,10 @@ const Certifications = () => {
                     </h4>
                     <p className="text-sm text-muted-foreground mt-0.5">{cert.issuer}</p>
                   </div>
-                  <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    whileHover={{ opacity: 1, x: 0 }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  >
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <ExternalLink size={13} className="text-muted-foreground" />
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </motion.a>
               );
             })}
           </div>
