@@ -59,6 +59,7 @@ const projects: Project[] = [
     title: "Smart Kisan",
     short: "AI-powered agriculture platform with crop prediction, disease detection, and community features.",
     tech: ["React.js", "Node.js", "Machine Learning"],
+    live: "https://volunverse-organizer-hub-ecd3.vercel.app/",
     details: [
       "Smart Kisan is a comprehensive AI-powered agriculture platform designed to empower Indian farmers with technology-driven solutions for modern farming challenges.",
       "Community Forum: A vibrant space for farmers to share knowledge, ask questions, and connect with agricultural experts and fellow farmers across regions.",
