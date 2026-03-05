@@ -23,6 +23,18 @@ const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
 };
 
 const Certifications = () => {
+  const getCertificateHref = (pdfPath: string) => {
+    if (typeof window === "undefined") return pdfPath;
+
+    const token = new URLSearchParams(window.location.search).get("__lovable_token");
+    if (!token) return pdfPath;
+
+    const url = new URL(pdfPath, window.location.origin);
+    url.searchParams.set("__lovable_token", token);
+
+    return `${url.pathname}${url.search}`;
+  };
+
   return (
     <section id="certifications" className="py-28 relative">
       <div className="container mx-auto px-6 relative z-10">
@@ -62,7 +74,7 @@ const Certifications = () => {
               return (
                 <motion.a
                   key={i}
-                  href={cert.pdf}
+                  href={getCertificateHref(cert.pdf)}
                   target="_blank"
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, x: -30, scale: 0.95 }}
