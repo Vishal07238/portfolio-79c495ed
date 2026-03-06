@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Award, ExternalLink, Shield, Star, Trophy } from "lucide-react";
 
 const certifications = [
-  { title: "Fundamentals of Deep Learning", issuer: "NVIDIA", icon: Shield, color: "electric", pdf: "/certificates/fundamentals-deep-learning.pdf" },
-  { title: "AWS Academy Graduate – Data Engineering", issuer: "Amazon Web Services", icon: Shield, color: "gold", pdf: "/certificates/aws-data-engineering.pdf" },
-  { title: "SQL (Basic) Certificate", issuer: "HackerRank", icon: Star, color: "violet", pdf: "/certificates/sql-basic.pdf" },
-  { title: "Machine Learning Internship", issuer: "iStudio", icon: Award, color: "rose", pdf: "/certificates/machine-learning-internship.pdf" },
+  { title: "Fundamentals of Deep Learning", issuer: "NVIDIA", icon: Shield, color: "electric", pdf: "https://drive.google.com/file/d/1XWJ1NMqf7jcso1Et5JQpDpJ4Un5R5hmR/view?usp=sharing" },
+  { title: "AWS Academy Graduate – Data Engineering", issuer: "Amazon Web Services", icon: Shield, color: "gold", pdf: "https://drive.google.com/file/d/1ypYWxHEdqGprCzYcLf6F-pg0W-e2gNvW/view?usp=sharing" },
+  { title: "SQL (Basic) Certificate", issuer: "HackerRank", icon: Star, color: "violet", pdf: "https://drive.google.com/file/d/1NEpx5hfkr8LEtcqr8iiaYOucikDPT-Dr/view?usp=sharing" },
+  { title: "Machine Learning Internship", issuer: "iStudio", icon: Award, color: "rose", pdf: "https://drive.google.com/file/d/1JqigHZxUi6ydy8-86W54XqYv8_A5ia61/view?usp=sharing" },
 ];
 
 const achievements = [
@@ -24,15 +24,7 @@ const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
 
 const Certifications = () => {
   const getCertificateHref = (pdfPath: string) => {
-    if (typeof window === "undefined") return pdfPath;
-
-    const token = new URLSearchParams(window.location.search).get("__lovable_token");
-    if (!token) return pdfPath;
-
-    const url = new URL(pdfPath, window.location.origin);
-    url.searchParams.set("__lovable_token", token);
-
-    return `${url.pathname}${url.search}`;
+    return pdfPath;
   };
 
   return (
