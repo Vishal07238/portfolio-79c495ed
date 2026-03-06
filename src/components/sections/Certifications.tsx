@@ -24,15 +24,7 @@ const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
 
 const Certifications = () => {
   const getCertificateHref = (pdfPath: string) => {
-    if (typeof window === "undefined") return pdfPath;
-
-    const token = new URLSearchParams(window.location.search).get("__lovable_token");
-    if (!token) return pdfPath;
-
-    const url = new URL(pdfPath, window.location.origin);
-    url.searchParams.set("__lovable_token", token);
-
-    return `${url.pathname}${url.search}`;
+    return pdfPath;
   };
 
   return (
