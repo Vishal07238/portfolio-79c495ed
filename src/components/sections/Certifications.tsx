@@ -23,8 +23,20 @@ const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
 };
 
 const Certifications = () => {
-  const getCertificateHref = (pdfPath: string) => {
-    return pdfPath;
+  const getCertificateHref = (certificateUrl: string) => {
+    const driveFileMatch = certificateUrl.match(/\/file\/d\/([^/]+)/);
+    if (driveFileMatch?.[1]) {
+      return `https://drive.google.com/file/d/${driveFileMatch[1]}/view`;
+    }
+    return certificateUrl;
+  };
+
+  const openCertificate = (certificateUrl: string) => {
+    const resolvedUrl = getCertificateHref(certificateUrl);
+    const popup = window.open(resolvedUrl, "_blank", "noopener,noreferrer");
+    if (!popup) {
+      window.location.assign(resolvedUrl);
+    }
   };
 
   return (
@@ -64,17 +76,18 @@ const Certifications = () => {
             {certifications.map((cert, i) => {
               const c = colorMap[cert.color];
               return (
-                <motion.a
+                <motion.button
                   key={i}
-                  href={getCertificateHref(cert.pdf)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  type="button"
+                  onClick={() => openCertificate(cert.pdf)}
                   initial={{ opacity: 0, x: -30, scale: 0.95 }}
                   whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
                   whileHover={{ x: 6, y: -3, boxShadow: `0 8px 30px ${c.glow}` }}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden block"
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden w-full text-left"
+                  aria-label={`Open certificate: ${cert.title}`}
+                  title={`Open ${cert.title}`}
                 >
                   {/* Shine effect */}
                   <motion.div
@@ -101,7 +114,7 @@ const Certifications = () => {
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <ExternalLink size={13} className="text-muted-foreground" />
                   </div>
-                </motion.a>
+                </motion.button>
               );
             })}
           </div>
