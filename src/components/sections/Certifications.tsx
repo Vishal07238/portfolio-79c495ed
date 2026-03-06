@@ -75,18 +75,20 @@ const Certifications = () => {
             </h3>
             {certifications.map((cert, i) => {
               const c = colorMap[cert.color];
+              const certificateHref = getCertificateHref(cert.pdf);
               return (
-                <motion.a
+                <motion.button
                   key={i}
-                  href={getCertificateHref(cert.pdf)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  type="button"
+                  onClick={() => openCertificate(cert.pdf)}
                   initial={{ opacity: 0, x: -30, scale: 0.95 }}
                   whileInView={{ opacity: 1, x: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, type: "spring", stiffness: 200 }}
                   whileHover={{ x: 6, y: -3, boxShadow: `0 8px 30px ${c.glow}` }}
-                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden block"
+                  className="glass-premium rounded-xl p-5 flex items-center gap-4 transition-all duration-500 cursor-pointer group relative overflow-hidden w-full text-left"
+                  aria-label={`Open certificate: ${cert.title}`}
+                  title={`Open ${cert.title}`}
                 >
                   {/* Shine effect */}
                   <motion.div
@@ -113,7 +115,8 @@ const Certifications = () => {
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <ExternalLink size={13} className="text-muted-foreground" />
                   </div>
-                </motion.a>
+                  <span className="sr-only">{certificateHref}</span>
+                </motion.button>
               );
             })}
           </div>
