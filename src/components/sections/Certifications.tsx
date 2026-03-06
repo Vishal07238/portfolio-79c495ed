@@ -75,7 +75,6 @@ const Certifications = () => {
             </h3>
             {certifications.map((cert, i) => {
               const c = colorMap[cert.color];
-              const certificateHref = getCertificateHref(cert.pdf);
               return (
                 <motion.button
                   key={i}
@@ -115,7 +114,6 @@ const Certifications = () => {
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <ExternalLink size={13} className="text-muted-foreground" />
                   </div>
-                  <span className="sr-only">{certificateHref}</span>
                 </motion.button>
               );
             })}
