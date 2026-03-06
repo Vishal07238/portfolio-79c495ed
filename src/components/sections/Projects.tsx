@@ -86,19 +86,36 @@ const projects: Project[] = [
       "This project demonstrates expertise in real-time web applications, authentication systems, role-based architectures, and responsive design.",
     ],
   },
-  {
-    id: 6, category: "Backend", categoryColor: "gold",
-    title: "Service Backend – Role-Based Task Management",
-    short: "Role-based task management backend with JWT auth, PostgreSQL, and REST APIs.",
-    tech: ["Node.js", "Express.js", "PostgreSQL"],
-    github: "https://github.com/Vishal07238/service-workflow-backend",
-    details: [
-      "A robust backend service implementing role-based task management with secure JWT authentication and comprehensive REST API design.",
-      "Built with Node.js and Express.js, featuring PostgreSQL for reliable data persistence. The API supports full CRUD operations with role-based access control.",
-      "API Endpoints: POST /auth/register (User registration), POST /auth/login (JWT authentication), GET /tasks (List tasks by role), POST /tasks (Create task - Admin/Manager), PUT /tasks/:id (Update task status), DELETE /tasks/:id (Delete task - Admin only), GET /users (List users - Admin only).",
-      "The system implements middleware for JWT verification, role validation, and request logging. Error handling follows REST best practices with appropriate HTTP status codes.",
-    ],
-  },
+   {
+     id: 6, category: "Backend", categoryColor: "gold",
+     title: "Service Backend – Role-Based Task Management",
+     short: "Role-based task management backend with JWT auth, PostgreSQL, and REST APIs.",
+     tech: ["Node.js", "Express.js", "PostgreSQL"],
+     github: "https://github.com/Vishal07238/service-workflow-backend",
+     details: [
+       "A robust backend service implementing role-based task management with secure JWT authentication and comprehensive REST API design.",
+       "Built with Node.js and Express.js, featuring PostgreSQL for reliable data persistence. The API supports full CRUD operations with role-based access control.",
+       "API Endpoints: POST /auth/register (User registration), POST /auth/login (JWT authentication), GET /tasks (List tasks by role), POST /tasks (Create task - Admin/Manager), PUT /tasks/:id (Update task status), DELETE /tasks/:id (Delete task - Admin only), GET /users (List users - Admin only).",
+       "The system implements middleware for JWT verification, role validation, and request logging. Error handling follows REST best practices with appropriate HTTP status codes.",
+     ],
+   },
+   {
+     id: 7, category: "Frontend", categoryColor: "rose",
+     title: "LUXE — E-Commerce Website",
+     short: "A multi-page e-commerce website built using pure HTML, CSS, and JavaScript with authentication, cart, wishlist, and checkout functionality.",
+     tech: ["HTML", "CSS", "JavaScript", "LocalStorage"],
+     github: "https://github.com/Vishal07238/ecommers",
+     live: "https://ecommers-beige.vercel.app",
+     details: [
+       "A fully functional e-commerce website built from scratch using vanilla HTML, CSS, and JavaScript. The project includes product browsing, authentication, wishlist management, cart system, and a complete checkout flow with persistent data using localStorage.",
+       "Complete Shopping Flow: Users can browse products, add items to cart, manage wishlist, proceed through checkout, and receive order confirmation with order history stored in their profile.",
+       "User Authentication: Secure login and registration system with form validation and password handling, enabling personalized user experiences.",
+       "Wishlist System: Persistent storage of favorite items with local data management, allowing users to save and retrieve wishlist items across sessions.",
+       "Advanced Product Features: Live search functionality, product filtering by category and price, sorting options, and detailed product information pages.",
+       "Order Management: Complete order history tracking in user profiles, order status updates, and order confirmation emails simulation.",
+       "Fully Responsive UI: Modern dark theme design that adapts seamlessly across desktop, tablet, and mobile devices with optimized user experience.",
+     ],
+   },
 ];
 
 const accentMap: Record<string, { badge: string; glow: string; border: string }> = {
