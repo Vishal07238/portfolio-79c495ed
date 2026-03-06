@@ -23,8 +23,20 @@ const colorMap: Record<string, { bg: string; text: string; glow: string }> = {
 };
 
 const Certifications = () => {
-  const getCertificateHref = (pdfPath: string) => {
-    return pdfPath;
+  const getCertificateHref = (certificateUrl: string) => {
+    const driveFileMatch = certificateUrl.match(/\/file\/d\/([^/]+)/);
+    if (driveFileMatch?.[1]) {
+      return `https://drive.google.com/file/d/${driveFileMatch[1]}/view`;
+    }
+    return certificateUrl;
+  };
+
+  const openCertificate = (certificateUrl: string) => {
+    const resolvedUrl = getCertificateHref(certificateUrl);
+    const popup = window.open(resolvedUrl, "_blank", "noopener,noreferrer");
+    if (!popup) {
+      window.location.assign(resolvedUrl);
+    }
   };
 
   return (
