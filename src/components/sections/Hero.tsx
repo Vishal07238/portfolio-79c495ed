@@ -339,7 +339,8 @@ const Hero = () => {
                 Let's Connect
               </motion.button>
               <motion.a
-                href="#contact"
+                href="/resume/Vishal_Arkalwar_Data_Engineer_Resume.pdf"
+                download="Vishal_Arkalwar_Data_Engineer_Resume.pdf"
                 className="btn-outline-premium flex items-center gap-2"
                 style={{ borderColor: "hsl(var(--gold) / 0.3)", color: "hsl(var(--gold))" }}
                 whileHover={{ scale: 1.05 }}

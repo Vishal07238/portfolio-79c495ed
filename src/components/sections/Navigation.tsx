@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const resumeUrl = "/resume/Vishal_Arkalwar_Data_Engineer_Resume.pdf";
+
 const navItems = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
@@ -9,6 +11,7 @@ const navItems = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Certifications", href: "#certifications" },
+  { label: "Resume", href: resumeUrl, external: true },
   { label: "Contact", href: "#contact" },
 ];
 
