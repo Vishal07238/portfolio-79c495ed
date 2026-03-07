@@ -64,7 +64,7 @@ const Navigation = () => {
     >
       <div className="flex items-center justify-between gap-6">
         <button
-          onClick={() => handleClick("#home")}
+          onClick={() => handleClick({ label: "Home", href: "#home" })}
           className="font-display text-lg font-bold text-gradient-cyan tracking-tight"
         >
           VA.
