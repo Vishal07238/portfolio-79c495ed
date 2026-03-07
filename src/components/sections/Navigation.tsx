@@ -154,7 +154,7 @@ const Navigation = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  onClick={() => handleClick(item.href)}
+                  onClick={() => handleClick(item)}
                   className={`text-sm px-3 py-2 rounded-lg transition-colors text-left ${
                     activeSection === item.href
                       ? "text-foreground bg-primary/10"
