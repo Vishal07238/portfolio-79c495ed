@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const resumeUrl = "/resume/Vishal_Arkalwar_Data_Engineer_Resume.pdf";
+
 const navItems = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
@@ -9,6 +11,7 @@ const navItems = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Certifications", href: "#certifications" },
+  { label: "Resume", href: resumeUrl, external: true },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -39,9 +42,13 @@ const Navigation = () => {
     document.documentElement.classList.toggle("light");
   };
 
-  const handleClick = (href: string) => {
+  const handleClick = (item: typeof navItems[0]) => {
     setIsOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    if (item.external) {
+      window.open(item.href, "_blank");
+    } else {
+      document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -57,7 +64,7 @@ const Navigation = () => {
     >
       <div className="flex items-center justify-between gap-6">
         <button
-          onClick={() => handleClick("#home")}
+          onClick={() => handleClick({ label: "Home", href: "#home" })}
           className="font-display text-lg font-bold text-gradient-cyan tracking-tight"
         >
           VA.
@@ -68,7 +75,7 @@ const Navigation = () => {
           {navItems.map((item) => (
             <button
               key={item.href}
-              onClick={() => handleClick(item.href)}
+              onClick={() => handleClick(item)}
               className={`relative text-[13px] font-medium px-3 py-1.5 rounded-lg transition-all duration-300 ${
                 activeSection === item.href
                   ? "text-foreground"
@@ -147,7 +154,7 @@ const Navigation = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  onClick={() => handleClick(item.href)}
+                  onClick={() => handleClick(item)}
                   className={`text-sm px-3 py-2 rounded-lg transition-colors text-left ${
                     activeSection === item.href
                       ? "text-foreground bg-primary/10"
