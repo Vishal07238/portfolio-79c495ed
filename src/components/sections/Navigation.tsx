@@ -42,9 +42,13 @@ const Navigation = () => {
     document.documentElement.classList.toggle("light");
   };
 
-  const handleClick = (href: string) => {
+  const handleClick = (item: typeof navItems[0]) => {
     setIsOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+    if (item.external) {
+      window.open(item.href, "_blank");
+    } else {
+      document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
