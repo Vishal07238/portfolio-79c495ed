@@ -75,7 +75,7 @@ const Navigation = () => {
           {navItems.map((item) => (
             <button
               key={item.href}
-              onClick={() => handleClick(item.href)}
+              onClick={() => handleClick(item)}
               className={`relative text-[13px] font-medium px-3 py-1.5 rounded-lg transition-all duration-300 ${
                 activeSection === item.href
                   ? "text-foreground"
