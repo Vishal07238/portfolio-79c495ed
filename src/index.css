@@ -53,7 +53,7 @@
     --sidebar-ring: 225 90% 65%;
   }
 
-  .light {
+  html.light, html.light :root {
     --background: 220 20% 97%;
     --foreground: 228 18% 10%;
 
