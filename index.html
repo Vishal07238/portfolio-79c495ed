@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" id="html-root">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      const htmlRoot = document.documentElement;
+      const saved = localStorage.getItem("theme");
+      const isDark = saved ? saved === "dark" : !window.matchMedia("(prefers-color-scheme: light)").matches;
+      
+      if (isDark) {
+        htmlRoot.classList.add("dark");
+      } else {
+        htmlRoot.classList.remove("dark");
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
