@@ -52,12 +52,7 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const toggleTheme = () => {
-    setIsDark((prev) => {
-      console.log("Theme toggled from", prev ? "dark" : "light", "to", !prev ? "dark" : "light");
-      return !prev;
-    });
-  };
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
   const handleClick = (item: typeof navItems[0]) => {
     setIsOpen(false);
