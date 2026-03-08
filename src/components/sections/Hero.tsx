@@ -12,7 +12,7 @@ const roles = [
 ];
 
 const stats = [
-  { value: 6, suffix: "+", label: "Projects" },
+  { value: 7, suffix: "+", label: "Projects" },
   { value: 5, suffix: "", label: "Tech Stacks" },
   { value: 100, suffix: "%", label: "Commitment" },
 ];

@@ -42,6 +42,15 @@ const skillCategories = [
       { name: "PostgreSQL", level: 78 },
     ],
   },
+  {
+    icon: Database, title: "Machine Learning", color: "violet",
+    skills: [
+      { name: "Scikit-learn", level: 80 },
+      { name: "TensorFlow", level: 75 },
+      { name: "Deep Learning", level: 72 },
+      { name: "Model Training", level: 78 },
+    ],
+  },
 ];
 
 const colorMap: Record<string, { text: string; bg: string; bar: string; glow: string; border: string }> = {
